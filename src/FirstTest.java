@@ -132,6 +132,38 @@ public class FirstTest {
         Assert.assertEquals("We see unexpected search empty title!", "Search and read the free encyclopedia in your language", search_empty_title);
     }
 
+    @Test
+    public void testCheckAllFoundArticlesContainsSearchKey() {
+        String keyword = "Java";
+        waitForElementPresentAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cannot find Search Wikipedia input!",
+                8);
+        waitForElementPresentAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Cannot find search input!",
+                3,
+                "Java");
+        Boolean allArticlesHasKeyword = checkWebElemensListContainsWordInText(By.id("org.wikipedia:id/page_list_item_title"),
+                "Cannot find any articles",
+                3,
+                keyword);
+        Assert.assertTrue("Some articles doesnt contain selected keyword: " + keyword, allArticlesHasKeyword);
+    }
+
+    private Boolean checkWebElemensListContainsWordInText(By by, String error_message, long timeoutInSeconds, String keyword) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message + "\n");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+        List<WebElement> listOfElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+
+        Boolean hasKeyword = true;
+        for (int i = 0; i < listOfElements.size(); i++) {
+            String elementTitle = listOfElements.get(i).getAttribute("text");
+            if (!elementTitle.contains(keyword)) hasKeyword = false;
+        }
+        return hasKeyword;
+    }
+
     private Integer getWebElementsCount(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
