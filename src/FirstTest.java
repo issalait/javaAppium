@@ -133,7 +133,7 @@ public class FirstTest {
     }
 
     @Test
-    public void testCheckAllFoundArticlesContainsSearchKey() {
+    public void testCheckAllFoundArticlesContainSearchKey() {
         String keyword = "Java";
         waitForElementPresentAndClick(By.id("org.wikipedia:id/search_container"),
                 "Cannot find Search Wikipedia input!",
@@ -142,7 +142,7 @@ public class FirstTest {
                 By.xpath("//*[contains(@text,'Search…')]"),
                 "Cannot find search input!",
                 3,
-                "Java");
+                keyword);
         Boolean allArticlesHasKeyword = checkWebElemensListContainsWordInText(By.id("org.wikipedia:id/page_list_item_title"),
                 "Cannot find any articles",
                 3,
