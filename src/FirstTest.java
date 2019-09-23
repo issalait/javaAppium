@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -104,6 +105,39 @@ public class FirstTest {
                 3);
         String article_title = title_element.getAttribute("text");
         Assert.assertEquals("We see unexpected title!", "Java (programming language)", article_title);
+    }
+
+    @Test
+    public void testCheckSearchDisplaysFewArticlesAndCancelSearch() {
+        waitForElementPresentAndClick(By.id("org.wikipedia:id/search_container"),
+                "Cannot find Search Wikipedia input!",
+                8);
+        waitForElementPresentAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Cannot find search input!",
+                3,
+                "Java");
+        Integer articlesCount = getWebElementsCount(By.id("org.wikipedia:id/page_list_item_container"),
+                "Cannot find any articles",
+                3);
+        Assert.assertTrue("Wiki can't find more than 2 articles about this =(", articlesCount > 2);
+
+        waitForElementPresentAndClick(By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find X to cancel search",
+                2);
+        WebElement search_empty_element = waitForElementPresent(By.id("org.wikipedia:id/search_empty_message"),
+                "Search results are still visible!",
+                3);
+        String search_empty_title = search_empty_element.getAttribute("text");
+        Assert.assertEquals("We see unexpected search empty title!", "Search and read the free encyclopedia in your language", search_empty_title);
+    }
+
+    private Integer getWebElementsCount(By by, String error_message, long timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message + "\n");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+        List<WebElement> listOfElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+        return listOfElements.size();
     }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
