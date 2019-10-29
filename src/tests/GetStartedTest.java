@@ -1,13 +1,16 @@
-package tests.iOS;
+package tests;
 
-import lib.IosBaseTest;
+import lib.BaseTest;
 import lib.ui.WelcomePage;
 import org.junit.Test;
 
-public class GetStartedTest extends IosBaseTest {
+public class GetStartedTest extends BaseTest {
 
     @Test
     public void testPassWelcome() {
+        if (this.Platform.isAndroid()) {
+            return;
+        }
         WelcomePage welcomePage = new WelcomePage(driver);
         welcomePage.waitForTheFreeEncyclopedia();
         welcomePage.clickNextBtn();
